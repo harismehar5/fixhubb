@@ -8,11 +8,12 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  ScrollView,
 } from "react-native";
 import { Entypo, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import SecondHeader from "../components/SecondHeader";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [locationPressed, isLocationPressed] = useState(false);
   const [servicePressed, isServicePressed] = useState(false);
   const [servicesList, setServicesList] = useState([
@@ -40,17 +41,32 @@ export default function HomeScreen() {
     },
     {
       id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      name: "Sub Service 1",
+      name: "Sub Service 2",
       icon: "car-sharp",
     },
     {
       id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      name: "Sub Service 1",
+      name: "Sub Service 3",
+      icon: "car-sharp",
+    },
+    {
+      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bn",
+      name: "Sub Service 4",
+      icon: "car-sharp",
+    },
+    {
+      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f65",
+      name: "Sub Service 5",
+      icon: "car-sharp",
+    },
+    {
+      id: "58694a0f-3da1-471f-bd96-145571e29d75",
+      name: "Sub Service 6",
       icon: "car-sharp",
     },
   ]);
   const ServiceItem = ({ item }) => (
-    <TouchableOpacity style={styles.service_list_container}>
+    <TouchableOpacity style={styles.service_list_container} onPress={() => navigation.navigate("SubServiceList")}>
       <Ionicons name={item.icon} size={24} color="black" />
       <Text
         style={{
@@ -83,7 +99,18 @@ export default function HomeScreen() {
       >
         {item.name}
       </Text>
-      <Ionicons name={item.icon} size={24} color="black" />
+      <View
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: "#ffffff",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons name={item.icon} size={24} color="black" />
+      </View>
     </TouchableOpacity>
   );
   const renderServiceList = ({ item }) => <ServiceItem item={item} />;
@@ -171,14 +198,32 @@ export default function HomeScreen() {
       <Text style={{ marginVertical: 15, marginHorizontal: 20 }}>
         Get the best from us
       </Text>
-      <View style={{ marginHorizontal: 10 }}>
+      <ScrollView style={{ marginHorizontal: 10 }}>
         <FlatList
           data={subServicesList}
           renderItem={renderSubServiceList}
           keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
-      </View>
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.cart_section}
+        onPress={() => navigation.navigate("Cart")}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View style={styles.cart_text_section}>
+            <Text>1</Text>
+          </View>
+          <Text style={styles.cart_text}>View Your Cart</Text>
+        </View>
+        <Text style={{ ...styles.cart_text }}>RS. 1500/-</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -238,5 +283,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F1F6FB",
     borderRadius: 15,
+  },
+  cart_section: {
+    position: "absolute",
+    bottom: 20,
+    width: "90%",
+    height: 60,
+    marginHorizontal: 20,
+    backgroundColor: "#007AAF",
+    // paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    color: "#ffffff",
+    justifyContent: "space-between",
+  },
+  cart_text_section: {
+    backgroundColor: "#ffffff",
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 10,
+  },
+  cart_text: {
+    color: "#ffffff",
   },
 });

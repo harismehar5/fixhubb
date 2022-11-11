@@ -6,7 +6,7 @@ import {
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 
 import Input from "../components/Input";
@@ -28,7 +28,7 @@ export default function LoginScreen({ navigation }) {
               marginVertical: 5,
               fontSize: 18,
               fontWeight: "bold",
-              color:"#ffffff"
+              color: "#ffffff",
             }}
           >
             Welcome!
@@ -41,7 +41,14 @@ export default function LoginScreen({ navigation }) {
           <Text style={[styles.forgot_style, styles.text_style]}>
             Forgot Password?
           </Text>
-          <Button title={"Login"} color="#F5AC30" textColor={"#ffffff"} />
+          <Button
+            title={"Login"}
+            color="#F5AC30"
+            textColor={"#ffffff"}
+            onPress={() => {
+              navigation.navigate("HomeTab");
+            }}
+          />
           {/* <Text style={[styles.center_text_style, styles.text_style]}>
           OR LOGIN WITH
         </Text>

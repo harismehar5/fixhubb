@@ -3,13 +3,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
 import HomeScreen from "./app/screens/HomeScreen";
 import OnboardingScreen from "./app/screens/OnboardingScreen";
 import ProfileScreen from "./app/screens/ProfileScreen";
 import SettingScreen from "./app/screens/SettingScreen";
+import CartScreen from "./app/screens/CartScreen";
+import AboutUsScreen from "./app/screens/AboutUsScreen";
+import ContactUsScreen from "./app/screens/ContactUsScreen";
+import PrivacyScreen from "./app/screens/PrivacyScreen";
+import SubServiceListScreen from "./app/screens/SubServiceListScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -19,14 +23,12 @@ export default function App() {
     return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          headerShown : false,
+          headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
             if (route.name === "Home") {
-              iconName = focused
-                ? "home-sharp"
-                : "home";
+              iconName = focused ? "home-sharp" : "home";
             } else if (route.name === "Setting") {
               iconName = focused ? "settings" : "settings-outline";
             } else if (route.name === "Profile") {
@@ -57,6 +59,11 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="HomeTab" component={HomeTabs} />
+        <Stack.Screen name="SubServiceList" component={SubServiceListScreen} />
+        <Stack.Screen name="Cart" component={CartScreen} />
+        <Stack.Screen name="AboutUS" component={AboutUsScreen} />
+        <Stack.Screen name="ContactUS" component={ContactUsScreen} />
+        <Stack.Screen name="Privacy" component={PrivacyScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

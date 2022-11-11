@@ -24,10 +24,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.haris54455.fixhubb"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1dcb85e3-dbfc-4e0f-9d3d-b5bcd41f3443"
+      }
     }
   }
 }
