@@ -14,6 +14,8 @@ import AboutUsScreen from "./app/screens/AboutUsScreen";
 import ContactUsScreen from "./app/screens/ContactUsScreen";
 import PrivacyScreen from "./app/screens/PrivacyScreen";
 import SubServiceListScreen from "./app/screens/SubServiceListScreen";
+import ServiceDetailsScreen from "./app/screens/ServiceDetailsScreen";
+import ServiceListScreen from "./app/screens/ServiceListScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -33,6 +35,8 @@ export default function App() {
               iconName = focused ? "settings" : "settings-outline";
             } else if (route.name === "Profile") {
               iconName = focused ? "person-sharp" : "person-outline";
+            } else if (route.name === "Services") {
+              iconName = focused ? "list-circle" : "list-circle-outline";
             }
 
             // You can return any component that you like here!
@@ -43,6 +47,7 @@ export default function App() {
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Services" component={ServiceListScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
         <Tab.Screen name="Setting" component={SettingScreen} />
       </Tab.Navigator>
@@ -60,6 +65,7 @@ export default function App() {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="HomeTab" component={HomeTabs} />
         <Stack.Screen name="SubServiceList" component={SubServiceListScreen} />
+        <Stack.Screen name="ServiceDetails" component={ServiceDetailsScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="AboutUS" component={AboutUsScreen} />
         <Stack.Screen name="ContactUS" component={ContactUsScreen} />

@@ -90,6 +90,7 @@ export default function HomeScreen({ navigation }) {
         paddingHorizontal: 10,
         marginVertical: 8,
       }}
+      onPress={()=> navigation.navigate("ServiceDetails")}
     >
       <Text
         style={{
