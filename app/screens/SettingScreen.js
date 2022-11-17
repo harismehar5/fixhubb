@@ -8,7 +8,7 @@ export default function SettingScreen({navigation}) {
     <SafeAreaView style={styles.container}>
       <SecondHeader></SecondHeader>
       <Text style={styles.heading_text}>Settings</Text>
-      <ButtonWithIcon title={"Change Password"} color="#F1F6FB" />
+      <ButtonWithIcon title={"Change Password"} color="#F1F6FB" onPress={()=> navigation.navigate("ChangePassword")}/>
       <ButtonWithIcon title={"Contact Us"} color="#F1F6FB" onPress={()=> navigation.navigate("ContactUS")}/>
       <ButtonWithIcon title={"About Us"} color="#F1F6FB" onPress={()=> navigation.navigate("AboutUS")}/>
       <ButtonWithIcon title={"Privacy"} color="#F1F6FB" onPress={()=> navigation.navigate("Privacy")}/>

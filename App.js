@@ -16,6 +16,7 @@ import PrivacyScreen from "./app/screens/PrivacyScreen";
 import SubServiceListScreen from "./app/screens/SubServiceListScreen";
 import ServiceDetailsScreen from "./app/screens/ServiceDetailsScreen";
 import ServiceListScreen from "./app/screens/ServiceListScreen";
+import ChangePasswordScreen from "./app/screens/ChangePasswordScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -67,6 +68,7 @@ export default function App() {
         <Stack.Screen name="SubServiceList" component={SubServiceListScreen} />
         <Stack.Screen name="ServiceDetails" component={ServiceDetailsScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
+        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
         <Stack.Screen name="AboutUS" component={AboutUsScreen} />
         <Stack.Screen name="ContactUS" component={ContactUsScreen} />
         <Stack.Screen name="Privacy" component={PrivacyScreen} />

@@ -13,7 +13,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Header from "../components/Header";
 
-export default function ProfileScreen({ navigation }) {
+export default function ChangePasswordScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -32,16 +32,16 @@ export default function ProfileScreen({ navigation }) {
               color: "#ffffff",
             }}
           >
-           Profile 
+           Change Password 
           </Text>
           {/* <Text style={styles.continue_style}>create a new account</Text> */}
-          <Input placeholder={"Full Name"} image={"user"} />
-          <Input placeholder={"Phone Number"} image={"mobile"} />
-          <Input placeholder={"Username or Email"} image={"envelope-o"} />
-          <Input placeholder={"Password"} image={"lock"} />
+          <Input placeholder={"Old Password"} image={"lock"} />
+          <Input placeholder={"New Password"} image={"lock"} />
+          <Input placeholder={"Confirm Password"} image={"lock"} />
+          {/* <Input placeholder={"Password"} image={"lock"} /> */}
           {/* <Text style={styles.forgot_style}>Forgot Password?</Text> */}
           <Button
-            title={"Edit"}
+            title={"Change"}
             color="#F5AC30"
             textColor={"#ffffff"}
             onPress={() => {
