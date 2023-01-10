@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,12 +8,112 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-
+import Toast from "react-native-toast-message";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Header from "../components/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { UPDATE_PASSWORD } from "../config/config";
 
 export default function ChangePasswordScreen({ navigation }) {
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [accessToken, setAccessToken] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getData().then((accessObject) => {
+      setAccessToken(accessObject.token);
+    });
+  }, []);
+  const validation = () => {
+    if (oldPassword === "" || oldPassword.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Old Password",
+      });
+    } else if (newPassword === "" || newPassword.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Old Password",
+      });
+    } else if (confirmPassword === "" || confirmPassword.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Password To Confirm",
+      });
+    } else if (newPassword !== confirmPassword) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Reconfirm Password",
+      });
+    } else {
+      var userObject = {
+        password: oldPassword,
+        new_password: newPassword,
+      };
+      updatePassword(userObject);
+    }
+  };
+  const updatePassword = (object) => {
+    setLoading(true);
+    console.log(accessToken);
+    axios
+      .post(UPDATE_PASSWORD, object, {
+        headers: {
+          "x-api-key": "sd4fji2378gi3urg",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then(function (response) {
+        // setLoading(false);
+        // console.log(response)
+        if (response.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Successfully Updated",
+          });
+          // storeData(response);
+          // navigation.navigate("Login");
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Something went wrong...!",
+          });
+        }
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: error.toString(),
+        });
+        setLoading(false);
+        console.log("error: " + error);
+      });
+  };
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@access_Key");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.toString(),
+      });
+      console.log(e.toString());
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -32,12 +132,27 @@ export default function ChangePasswordScreen({ navigation }) {
               color: "#ffffff",
             }}
           >
-           Change Password 
+            Change Password
           </Text>
           {/* <Text style={styles.continue_style}>create a new account</Text> */}
-          <Input placeholder={"Old Password"} image={"lock"} />
-          <Input placeholder={"New Password"} image={"lock"} />
-          <Input placeholder={"Confirm Password"} image={"lock"} />
+          <Input
+            placeholder={"Old Password"}
+            image={"lock"}
+            value={oldPassword}
+            onChangeText={setOldPassword}
+          />
+          <Input
+            placeholder={"New Password"}
+            image={"lock"}
+            value={newPassword}
+            onChangeText={setNewPassword}
+          />
+          <Input
+            placeholder={"Confirm Password"}
+            image={"lock"}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
           {/* <Input placeholder={"Password"} image={"lock"} /> */}
           {/* <Text style={styles.forgot_style}>Forgot Password?</Text> */}
           <Button
@@ -45,7 +160,8 @@ export default function ChangePasswordScreen({ navigation }) {
             color="#F5AC30"
             textColor={"#ffffff"}
             onPress={() => {
-              navigation.navigate("HomeTab");
+              // navigation.navigate("HomeTab");
+              validation()
             }}
           />
           {/* <View
@@ -72,6 +188,7 @@ export default function ChangePasswordScreen({ navigation }) {
           </View> */}
         </View>
       </ImageBackground>
+      <Toast></Toast>
     </SafeAreaView>
   );
 }

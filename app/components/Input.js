@@ -12,6 +12,7 @@ const Input = ({
   onEndEditing,
   error,
   errorMessage,
+  editable
 }) => {
   //const {inputStyle, labelStyle, containerStyle} = styles;
   return (
@@ -34,6 +35,7 @@ const Input = ({
           underlineColorAndroid="transparent"
           onEndEditing={onEndEditing}
           secureTextEntry={secureTextEntry}
+          editable={editable}
         />
       </View>
       {error ? <Text style={{ color: '#FF0000' }}>{errorMessage}</Text> : null}

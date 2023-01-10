@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,77 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import axios from "axios";
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Header from "../components/Header";
+import { SIGN_IN } from "../config/config";
 export default function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState("harismehar54455@gmail.com");
+  const [password, setPassword] = useState("password123");
+  const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    if (email === "" || email.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter User Name Or Email",
+      });
+    } else if (password === "" || password.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Password",
+      });
+    } else {
+      var loginObject = {
+        email: email,
+        password: password,
+      };
+      login(loginObject);
+    }
+  };
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("@access_Key", jsonValue);
+    } catch (e) {
+      // saving error
+      console.log(e.toString());
+    }
+  };
+  const login = (object) => {
+    setLoading(true);
+    axios
+      .post(SIGN_IN, object, {
+        headers: {
+          "x-api-key": "sd4fji2378gi3urg",
+        },
+      })
+      .then(function (response) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Welcome To Fixhubb",
+        });
+        setLoading(false);
+        storeData(response.data);
+        navigation.navigate("HomeTab");
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: error.toString(),
+        });
+        setLoading(false);
+        console.log("error: " + error);
+      });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -36,8 +102,18 @@ export default function LoginScreen({ navigation }) {
           <Text style={[styles.continue_style, styles.text_style]}>
             sign in to continue
           </Text>
-          <Input placeholder={"Username or Email"} image={"envelope-o"} />
-          <Input placeholder={"Password"} image={"lock"} />
+          <Input
+            placeholder={"Email"}
+            image={"envelope-o"}
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Input
+            placeholder={"Password"}
+            image={"lock"}
+            value={password}
+            onChangeText={setPassword}
+          />
           <Text style={[styles.forgot_style, styles.text_style]}>
             Forgot Password?
           </Text>
@@ -46,7 +122,8 @@ export default function LoginScreen({ navigation }) {
             color="#F5AC30"
             textColor={"#ffffff"}
             onPress={() => {
-              navigation.navigate("HomeTab");
+              // navigation.navigate("HomeTab");
+              validate();
             }}
           />
           {/* <Text style={[styles.center_text_style, styles.text_style]}>

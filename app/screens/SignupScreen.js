@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,84 @@ import {
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Header from "../components/Header";
+import Toast from "react-native-toast-message";
+import axios from "axios";
+import { SIGN_UP } from "../config/config";
 
 export default function SignupScreen({ navigation }) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const validation = () => {
+    if (name === "" || name.length === 0) {
+      console.log("world");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Name",
+      });
+    } else if (phone === "" || phone.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Phone Number",
+      });
+    } else if (password === "" || password.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please Enter Password",
+      });
+    } else {
+      var userObject = {
+        name: name,
+        phone: phone,
+        email: email,
+        password: password,
+      };
+      signUp(userObject);
+    }
+  };
+  const signUp = (object) => {
+    setLoading(true);
+    axios
+      .post(SIGN_UP, object, {
+        headers: {
+          "x-api-key": "sd4fji2378gi3urg",
+        },
+      })
+      .then(function (response) {
+        // setLoading(false);
+        // console.log(response)
+        if (response.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Welcome To Fixhubb",
+          });
+          // storeData(response);
+          // navigation.navigate("Login");
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Something went wrong...!",
+          });
+        }
+      })
+      .catch(function (error) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: error.toString(),
+        });
+        setLoading(false);
+        console.log("error: " + error);
+      });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -35,17 +111,38 @@ export default function SignupScreen({ navigation }) {
             Sign Up
           </Text>
           <Text style={styles.continue_style}>create a new account</Text>
-          <Input placeholder={"Full Name"} image={"user"} />
-          <Input placeholder={"Phone Number"} image={"mobile"} />
-          <Input placeholder={"Username or Email"} image={"envelope-o"} />
-          <Input placeholder={"Password"} image={"lock"} />
+          <Input
+            placeholder={"Full Name"}
+            image={"user"}
+            value={name}
+            onChangeText={setName}
+          />
+          <Input
+            placeholder={"Phone Number"}
+            image={"mobile"}
+            value={phone}
+            onChangeText={setPhone}
+          />
+          <Input
+            placeholder={"Email"}
+            image={"envelope-o"}
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Input
+            placeholder={"Password"}
+            image={"lock"}
+            value={password}
+            onChangeText={setPassword}
+          />
           <Text style={styles.forgot_style}>Forgot Password?</Text>
           <Button
             title={"Login"}
             color="#F5AC30"
             textColor={"#ffffff"}
             onPress={() => {
-              navigation.navigate("HomeTab");
+              // navigation.navigate("HomeTab");
+              validation();
             }}
           />
           <View
@@ -72,6 +169,7 @@ export default function SignupScreen({ navigation }) {
           </View>
         </View>
       </ImageBackground>
+      <Toast />
     </SafeAreaView>
   );
 }
