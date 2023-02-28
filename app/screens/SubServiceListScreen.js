@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -8,109 +8,108 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  Image,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import SecondHeader from "../components/SecondHeader";
 import SmallButton from "../components/SmallButton";
 
+import axios from "axios";
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GET_SUB_SERVICES } from "../config/config";
+
 const height = Dimensions.get("window").height / 4.5;
+// const width = Dimensions.get("screen").width / 2.2;
 
 export default function SubServiceListScreen({ navigation }) {
-  const [subServiceList, setSubServiceList] = useState([
-    {
-      id: 1,
-      heading: "AC Installations",
-      description:
-        "Non amet esse non nisi do sint qui irure labore incididunt sint. Quis pariatur commodo dolore deserunt ullamco. Reprehenderit esse consectetur aliqua ullamco ullamco id esse velit officia deserunt ea. Fugiat id velit enim occaecat quis exercitation reprehenderit Lorem excepteur.",
-      price: "500",
-      icon: "ios-trash-bin-outline",
-    },
-    {
-      id: 2,
-      heading: "AC Installations",
-      description:
-        "Non amet esse non nisi do sint qui irure labore incididunt sint. Quis pariatur commodo dolore deserunt ullamco. Reprehenderit esse consectetur aliqua ullamco ullamco id esse velit officia deserunt ea. Fugiat id velit enim occaecat quis exercitation reprehenderit Lorem excepteur.",
-      price: "500",
-      icon: "ios-trash-bin-outline",
-    },
-    {
-      id: 3,
-      heading: "AC Installations",
-      description:
-        "Non amet esse non nisi do sint qui irure labore incididunt sint. Quis pariatur commodo dolore deserunt ullamco. Reprehenderit esse consectetur aliqua ullamco ullamco id esse velit officia deserunt ea. Fugiat id velit enim occaecat quis exercitation reprehenderit Lorem excepteur.",
-      price: "500",
-      icon: "ios-trash-bin-outline",
-    },
-    {
-      id: 4,
-      heading: "AC Installations",
-      description:
-        "Non amet esse non nisi do sint qui irure labore incididunt sint. Quis pariatur commodo dolore deserunt ullamco. Reprehenderit esse consectetur aliqua ullamco ullamco id esse velit officia deserunt ea. Fugiat id velit enim occaecat quis exercitation reprehenderit Lorem excepteur.",
-      price: "500",
-      icon: "ios-trash-bin-outline",
-    },
-  ]);
+  const [subServiceList, setSubServiceList] = useState([]);
+  const [accessToken, setAccessToken] = useState({});
+
+  useEffect(() => {
+    getData().then((accessObject) => {
+      setAccessToken(accessObject.token);
+      getSubServices(accessObject.token);
+    });
+  }, []);
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@access_Key");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.toString(),
+      });
+      console.log(e.toString());
+    }
+  };
+  const getSubServices = (token) => {
+    axios
+      .get(GET_SUB_SERVICES + "?franchise=1&service=2", {
+        headers: {
+          "x-api-key": "sd4fji2378gi3urg",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        var subServicesArray = [];
+        for (var i = 0; i < response.data.length; i++) {
+          subServicesArray.push({
+            id: response.data[i].id,
+            name: response.data[i].franchise_sub_service.name,
+            image: response.data[i].franchise_sub_service.icon,
+            description: response.data[i].franchise_sub_service.description,
+            price: response.data[i].price,
+          });
+        }
+        setSubServiceList(subServicesArray);
+      })
+      .catch((error) => console.log(error));
+  };
   const SubServiceItem = ({ item }) => (
-    <TouchableOpacity
-      style={{
-        height: height,
-        flexDirection: "column",
-        backgroundColor: "#F1F6FB",
-        borderRadius: 15,
-        paddingHorizontal: 10,
-        marginVertical: 8,
-      }}
-      onPress={() => navigation.navigate("ServiceDetails")}
-    >
-      <Text style={styles.bold_text}>{item.heading}</Text>
-      <Text>{item.description}</Text>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={styles.bold_text}>
-          {"Rate: "}
-          {item.price}
-          {"/-"}
-        </Text>
-        <View
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 15,
-            backgroundColor: "#ffffff",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <MaterialCommunityIcons name="cart-variant" size={24} color="black" />
-        </View>
+    <TouchableOpacity style={styles.item} onPress={() => console.log("hello")}>
+      <Image style={styles.image} source={{ uri: item.image }} />
+      <View style={styles.text_container}>
+        <Text style={styles.service_name}>{item.name}</Text>
+        <Text style={styles.service_price}>{"$" + item.price}</Text>
+      </View>
+      {/* <Text style={styles.service_desc} numberOfLines={2} ellipsizeMode="tail">
+        {item.description}
+      </Text> */}
+      <View style={styles.cart_icon}>
+        <Feather name="shopping-cart" size={24} color="white" />
       </View>
     </TouchableOpacity>
   );
   const renderSubServiceList = ({ item }) => <SubServiceItem item={item} />;
   return (
     <SafeAreaView style={styles.container}>
-      <SecondHeader></SecondHeader>
+      {/* <SecondHeader></SecondHeader> */}
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
+          width: "100%",
+          height: 60,
+          marginBottom: 10,
+          justifyContent: "flex-start",
           alignItems: "center",
+          backgroundColor: "#007AAF",
+          color: "#ffffff",
+          flexDirection: "row",
         }}
       >
-        <Text style={styles.heading_text}>Sub Services</Text>
-        <View style={{ marginRight: 20 }}>
-          <SmallButton
-            title={"Custom Query"}
-            color={"#007AAF"}
-            textColor={"#ffffff"}
-          />
-        </View>
+        <Text style={styles.name_text}>Sub Services</Text>
       </View>
+
       <FlatList
         data={subServiceList}
         renderItem={renderSubServiceList}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ marginHorizontal: 20 }}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between", marginHorizontal:10 }}
       />
       <TouchableOpacity
         style={styles.cart_section}
@@ -140,9 +139,10 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: "#ffffff",
   },
-  heading_text: {
-    fontSize: 22,
+  name_text: {
+    fontSize: 18,
     marginHorizontal: 20,
+    marginVertical: 10,
   },
   cart_section: {
     position: "absolute",
@@ -171,9 +171,51 @@ const styles = StyleSheet.create({
   cart_text: {
     color: "#ffffff",
   },
-  bold_text: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginVertical: 5,
+  item: {
+    width: "45%",
+    flexDirection: "column",
+    alignItems: "center",
+    marginHorizontal: 10,
+    borderRadius: 5,
+    // borderWidth: 0.5,
+    // borderColor: "#cdcdcd",
+    height: 210,
+  },
+  image: {
+    width: "100%",
+    height: 120,
+    borderRadius: 5,
+  },
+  text_container: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginVertical: 15,
+    paddingHorizontal: 5,
+  },
+  service_name: {
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  service_price: {
+    marginTop: 5,
+  },
+  service_desc: {
+    color: "gray",
+    width: "100%",
+    paddingHorizontal: 5,
+    marginBottom: 5,
+  },
+  cart_icon: {
+    position: "absolute",
+    top: 100,
+    right: -10,
+    height: 40,
+    width: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "#007AAF",
   },
 });

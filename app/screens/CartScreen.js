@@ -1,154 +1,201 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Dimensions,
-  TouchableOpacity,
   FlatList,
-  ScrollView,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import Modal from "react-native-modal";
-
-const height = Dimensions.get("window").height / 2.2;
-const modalHeight = Dimensions.get("window").height / 3.5;
-
-
+import { AntDesign } from "@expo/vector-icons";
 import SecondHeader from "../components/SecondHeader";
-import CartListItem from "../components/CartListItem";
-import Button from "../components/Button";
-import Input from "../components/Input";
-import SmallButton from "../components/SmallButton";
 
-export default function CartScreen() {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [cartList, setCartList] = useState([
+const CartScreen = ({ navigation }) => {
+  const [quantities, setQuantities] = useState({});
+  const services = [
     {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      name: "Sub Service 1",
-      icon: "trash-bin",
-      image: "https://picsum.photos/200",
+      id: "1",
+      name: "Service 1",
+      price: 10,
+      image: "https://via.placeholder.com/150",
     },
     {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      name: "Sub Service 2",
-      icon: "trash-bin",
-      image: "https://picsum.photos/200",
+      id: "2",
+      name: "Service 2",
+      price: 15,
+      image: "https://via.placeholder.com/150",
     },
     {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      name: "Sub Service 3",
-      icon: "trash-bin",
-      image: "https://picsum.photos/200",
+      id: "3",
+      name: "Service 3",
+      price: 20,
+      image: "https://via.placeholder.com/150",
     },
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bn",
-      name: "Sub Service 4",
-      icon: "trash-bin",
-      image: "https://picsum.photos/200",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f65",
-      name: "Sub Service 5",
-      icon: "trash-bin",
-      image: "https://picsum.photos/200",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d75",
-      name: "Sub Service 6",
-      icon: "trash-bin",
-      image: "https://picsum.photos/200",
-    },
-  ]);
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  ];
+
+  const ServiceItem = ({ item, onQuantityChange }) => {
+    const [quantity, setQuantity] = useState(0);
+
+    const handleAdd = () => {
+      setQuantity(quantity + 1);
+      onQuantityChange(item.id, quantity + 1);
+    };
+
+    const handleMinus = () => {
+      if (quantity > 0) {
+        setQuantity(quantity - 1);
+        onQuantityChange(item.id, quantity - 1);
+      }
+    };
+
+    return (
+      <View style={styles.item}>
+        <Image source={{ uri: item.image }} style={styles.image} />
+        <View style={styles.info}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.name}>{item.name}</Text>
+            <View style={styles.quantityControl}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#007AAF",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 24,
+                  width: 24,
+                  borderRadius: 12,
+                }}
+                onPress={handleMinus}
+              >
+                <AntDesign name="minus" size={14} color="#ffffff" />
+              </TouchableOpacity>
+              <Text style={styles.quantity}>{quantity}</Text>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#007AAF",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 24,
+                  width: 24,
+                  borderRadius: 12,
+                }}
+                onPress={handleAdd}
+              >
+                <AntDesign name="plus" size={14} color="#ffffff" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Text style={styles.price}>${item.price}</Text>
+        </View>
+      </View>
+    );
   };
-  const renderCartList = ({ item }) => <CartListItem item={item} />;
-  return (
-    <SafeAreaView style={styles.container}>
-      <SecondHeader></SecondHeader>
-      <Text style={styles.cart_text}>My Cart</Text>
-      <View style={styles.list_section}>
-        <FlatList
-          data={cartList}
-          renderItem={renderCartList}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          // marginHorizontal: 20,
-          marginVertical: 5,
-        }}
-      >
-        <View style={{ width: "70%", justifyContent: "center" }}>
-          <Input placeholder={"Promo Code"} />
-        </View>
-        <View style={{ width: "25%", justifyContent: "center" }}>
-          <SmallButton
-            title={"Apply"}
-            color="#007FB2"
-            textColor={"#ffffff"}
-            onPress={() => {
-              navigation.navigate("HomeTab");
-            }}
-          />
-        </View>
-      </View>
-      <View style={styles.text_section}>
-        <Text style={styles.text_style}>Sub Total</Text>
-        <Text style={styles.text_style}>RS. 10500/-</Text>
-      </View>
-      <View style={styles.text_section}>
-        <Text style={styles.text_style}>Sub Total</Text>
-        <Text style={styles.text_style}>RS. 10500/-</Text>
-      </View>
-      <View style={styles.text_section}>
-        <Text style={styles.text_style}>Sub Total</Text>
-        <Text style={styles.text_style}>RS. 10500/-</Text>
-      </View>
-      <Button
-        title={"Place Order"}
-        color="#007FB2"
-        textColor={"#ffffff"}
-        onPress={toggleModal}
-      />
-      <Modal isVisible={isModalVisible} onBackdropPress={() => setModalVisible(false)} >
-        <View style={{ backgroundColor:"#0093C0", height: modalHeight, justifyContent:"center", alignItems:"center", borderRadius:10, }}>
-          <Text style={{color:"#ffffff", fontWeight:"800", fontSize: 22, marginBottom:20}}>ORDER CONFIRMED</Text>
-          <Text style={{color:"#ffffff", fontSize: 18, marginVertical:5}}>Your order has been sent</Text>
-          <Text style={{color:"#ffffff", fontSize: 18, marginVertical:5, textAlign:"center"}} >Our representative will be there at mean time</Text>
-        </View>
-      </Modal>
-    </SafeAreaView>
+  const handleQuantityChange = (serviceId, quantity) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [serviceId]: quantity,
+    }));
+  };
+
+  const renderItem = ({ item }) => (
+    <ServiceItem item={item} onQuantityChange={handleQuantityChange} />
   );
-}
+
+  return (
+    <View style={styles.container}>
+      <SecondHeader />
+      <FlatList
+        data={services}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+      />
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={{
+            // flexDirection:"row",
+            justifyContent: "center",
+            // alignItems: "center",
+            paddingHorizontal: 20,
+            width: "50%",
+          }}
+          // onPress={() => isFollowed(!followed)}
+        >
+          <Text style={styles.price}>{"Total Amount"}</Text>
+          <Text style={styles.name}>{"Rs 1000/-"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("Checkout")}>
+          <Text style={styles.buttonText}>Continue</Text>
+          {/* <AntDesign name="arrowright" size={18} color="#ffffff" /> */}
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight || 0,
-    backgroundColor: "#ffffff",
+    flexDirection: "column",
+    // paddingHorizontal: 10,
+    paddingTop: 20,
   },
-  cart_text: {
-    fontSize: 22,
-    marginHorizontal: 20,
+  list: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
-  list_section: {
-    height: height,
-    marginHorizontal: 20,
-  },
-  text_section: {
+  item: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 20,
-    marginVertical: 15,
+    alignItems: "center",
+    marginBottom: 10,
   },
-  text_style: {
+  image: {
+    width: 72,
+    height: 72,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  info: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 5,
+  },
+  price: {
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  quantityControl: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quantityButton: {
+    fontSize: 20,
+    color: "#ffffff",
+    paddingHorizontal: 10,
+  },
+  quantity: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: "#007AAF",
+    // padding: 10,
+    width: "50%",
+    borderTopLeftRadius: 30,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 5,
   },
 });
+
+export default CartScreen;
